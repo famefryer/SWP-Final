@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-    <script src="https://playground.abysscorp.org/chartjs/livecharts/dist/Chart.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.core.min.js"></script>
-
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+      <script src="https://playground.abysscorp.org/chartjs/livecharts/dist/Chart.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.core.min.js"></script>
    <style>
       canvas {
         display: inline-block !important;
@@ -13,7 +12,28 @@
     </style>
   </head>
   <body>
+    <h1>HI</h1>
     <canvas id="chart0" style="width:512px;height:320px"></canvas>
+    
   </body>
-  <script src="/script.js" type="module"></script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+      https://firebase.google.com/docs/web/setup#config-web-app -->
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+    apiKey: "AIzaSyDk8PwAjgNogtozX72KumFbyAvGWmE3ISA",
+    authDomain: "swp-dataflow.firebaseapp.com",
+    databaseURL: "https://swp-dataflow.firebaseio.com",
+    projectId: "swp-dataflow",
+    storageBucket: "swp-dataflow.appspot.com",
+    messagingSenderId: "578374115472",
+    appId: "1:578374115472:web:75de0578e4a40439"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  </script>
+  <script src="./script.js"></script>
 </html>

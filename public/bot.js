@@ -1,7 +1,7 @@
 // const {BigQuery} = require('@google-cloud/bigquery');
 
 var Twit = require('twit')
-var config = require('../config') 
+var config = require('../config')
 var T = new Twit(config)
 var db = require('./db.js')
 const moment = require("moment");
@@ -16,64 +16,92 @@ var firebaseConfig = {
     storageBucket: "swp-dataflow.appspot.com",
     messagingSenderId: "578374115472",
     appId: "1:578374115472:web:75de0578e4a40439"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+let countTweet = { currenttime: Date.now(), count: 0 }
+
+setInterval(() => {
+    firebase.database().ref('/tweet').push(countTweet)
+    countTweet = { currenttime: Date.now(), count: 0 }
+}, 60 * 1000)
 
 const addFilterCount = async () => {
     const currentDB = await db.read();
     const currenttime = moment()
-      .startOf("minute")
-      .toISOString();
+        .startOf("minute")
+        .toISOString();
     const time = currentDB[currenttime] || 0;
     //Up to firebase
-    firebase.database().ref('tweet').push({
-        currenttime,count:time+1 
-    })
+ 
+    // firebase.database().ref("/count").transaction((data) => {
+    //     if(data) {
+    //         if(data.tweet.currenttime) {
+    //             data.tweet.currenttime ++
+    //         } else {
+    //             data.tweet = {
+    //                 [currenttime]: 1
+    //             }
+    //         }
+    //     } else {
+    //         data = {}
+    //     }
+    //     return data
+    // })
     const output = await db.write(currenttime, time + 1);
     return output;
-  };
+};
 
-var streamingTweets = (tweetList,filter) => {
+var streamingTweets = (tweetList, filter) => {
     var num = 1
     var stream = T.stream('statuses/filter', { track: filter })
-     
+
     stream.on('tweet', async function (tweet) {
-        try{
-        await addFilterCount();
-        // console.log(num+'('+lang+') '+name +' : '+text)
-        // console.log('==============================');
-        }catch(err){
+        console.log("recieve tweet");
+        
+        try {
+            // countTweet.count+=1
+            countTweet.count++
+
+            console.log(countTweet);
+            
+            
+            await addFilterCount();
+            // console.log(num+'('+lang+') '+name +' : '+text)
+            // console.log('==============================');
+        
+        } catch (err) {
             console.log(err);
         }
     })
 }
 
 // Get
-var getTweet = function getTweet(){
+var getTweet = function getTweet() {
     var params = {
         q: '#ท่านก้อง',
         count: 10
     }
-    T.get('search/tweets',params, gotData)
+    T.get('search/tweets', params, gotData)
 
-    function gotData(err,data,res){
+    function gotData(err, data, res) {
         var tweets = data.statuses
-        for(var i =0;i<tweets.length;i++){
+        for (var i = 0; i < tweets.length; i++) {
             console.log(tweets[i].text);
         }
     }
 }
 
 // Post
-function tweetIt(){
-    var rand = Math.floor(Math.random()*100)
+function tweetIt() {
+    var rand = Math.floor(Math.random() * 100)
     var tweet = {
-        status: '#ท่านก้อง อิอิซ่า'+rand+rand +'+'
+        status: '#ท่านก้อง อิอิซ่า' + rand + rand + '+'
     }
-    T.post('statuses/update',tweet,tweeted)
-    function tweeted(err,data,res){
-        if(err){
+    T.post('statuses/update', tweet, tweeted)
+    function tweeted(err, data, res) {
+        if (err) {
             console.log('something bad happens');
         }
         else {
@@ -83,11 +111,11 @@ function tweetIt(){
 }
 // t = []
 // streamingTweets(t,'rain')
-module.exports = {streamingTweets,getTweet}
+module.exports = { streamingTweets, getTweet }
 // const bigquery = new BigQuery({
 //     projectId: 'swp-dataflow',
 //   });
-  
+
 //   // Inserts data into a table
 //   await bigquery
 //     .dataset(datasetId)

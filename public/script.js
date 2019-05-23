@@ -4,18 +4,35 @@ var data2 = []
 
 var originalCalculateXLabelRotation = Chart.Scale.prototype.calculateXLabelRotation
 
+console.log(firebase);
+
+
 async function getData() {
-  $.getJSON("db.json", async (res) => {
-    const json = res
-    console.log(res)
-    array = Object.keys(json).map(key => ({ time: key, number: json[key] }))
-    labels2 = await array.map((e) => {
-      return e.time;
-    });
-    data2 = await array.map((e) => {
-      return e.number
-    });;
-  });
+  // $.getJSON("./db.json", async (res) => {
+  //   const json = res
+  //   // console.log(res)
+  //   array = Object.keys(json).map(key => ({ time: key, number: json[key] }))
+  //   labels2 = await array.map((e) => {
+  //     return e.time;
+  //   }); 
+  //   data2 = await array.map((e) => {
+  //     return e.number
+  //   });;
+  //   console.log(labels2);
+  //   console.log(data2);
+  // });
+  firebase.database().ref('/tweet').on('value', function (snapshot) {
+    labels2 = []
+    data2 = []
+    const database = Object.values(snapshot.val())
+    
+    database.map(data => {
+      labels2.push(data.currenttime)
+      data2.push(data.count)
+    })
+    console.log(labels2);
+    console.log(data2);
+  })
 }
 
 var ctx_live = document.getElementById("chart0");
@@ -54,4 +71,4 @@ var updateChart = async function () {
 };
 
 // get new data every 3 seconds
-setInterval(updateChart, 60000);
+setInterval(updateChart, 1000);

@@ -22,4 +22,4 @@ app.get("/", (req, res) => {
   // res.send(tweets)
   });
 app.listen(PORT, HOST);
-streamingTweets(tweets,'Trade War')
+streamingTweets(tweets,'#tradewar')
